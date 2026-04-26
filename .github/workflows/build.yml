@@ -26,7 +26,8 @@ jobs:
             -scheme AppLock \
             -configuration Release \
             -derivedDataPath ./DerivedData \
-            build
+            -arch arm64 -arch x86_64 \
+            build    
 
       - name: Create archive
         run: |
