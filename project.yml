@@ -24,4 +24,4 @@ targets:
         ENABLE_HARDENED_RUNTIME: YES
         CODE_SIGN_IDENTITY: "-"
         PRODUCT_NAME: AppLock
-        ARCHS: "$(ARCHS_STANDARD)"
+        EXCLUDED_ARCHS: ""
