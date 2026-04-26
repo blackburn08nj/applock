@@ -20,24 +20,34 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Build AppLock
+      
+      - name: Build AppLock (arm64)
         run: |
           xcodebuild -project AppLock.xcodeproj \
             -scheme AppLock \
             -configuration Release \
-            -derivedDataPath ./DerivedData \
+            -derivedDataPath ./DerivedData_arm64 \
+            -arch arm64 \
             build    
 
-      - name: Create archive
+      - name: Build AppLock (x86_64)
         run: |
-          APP_PATH="./DerivedData/Build/Products/Release/AppLock.app"
-          if [ ! -d "$APP_PATH" ]; then
-            APP_PATH="./DerivedData/Build/Products/Release/AppLock.app"
-          fi
-          echo "App path: $APP_PATH"
-          ls -la "./DerivedData/Build/Products/Release/"
-          ditto -c -k --keepParent "$APP_PATH" AppLock.zip
-
+          xcodebuild -project AppLock.xcodeproj \
+            -scheme AppLock \
+            -configuration Release \
+            -derivedDataPath ./DerivedData_x86_64 \
+            -arch x86_64 \
+            build    
+      
+      - name: Create universal binary
+        run: |
+          mkdir -p ./DerivedData/Build/Products/Release/AppLock.app/Contents/MacOS
+          lipo -create \
+            ./DerivedData_arm64/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock \
+            ./DerivedData_x86_64/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock \
+            -output ./DerivedData/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock  
+      
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
