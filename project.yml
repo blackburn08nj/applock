@@ -1,0 +1,26 @@
+name: AppLock
+options:
+  bundleIdPrefix: com.applock
+  deploymentTarget:
+    macOS: "12.0"
+  xcodeVersion: "15.0"
+
+targets:
+  AppLock:
+    type: application
+    platform: macOS
+    sources:
+      - Sources
+    resources:
+      - Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.applock.app
+        INFOPLIST_FILE: Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Resources/AppLock.entitlements
+        SWIFT_VERSION: "5.9"
+        MACOSX_DEPLOYMENT_TARGET: "12.0"
+        COMBINE_HIDPI_IMAGES: YES
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_IDENTITY: "-"
+        PRODUCT_NAME: AppLock

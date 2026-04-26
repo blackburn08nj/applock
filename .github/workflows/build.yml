@@ -1,0 +1,46 @@
+name: Build AppLock
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build AppLock
+        run: |
+          xcodebuild -project AppLock.xcodeproj \
+            -scheme AppLock \
+            -configuration Release \
+            -derivedDataPath ./DerivedData \
+            build
+
+      - name: Create archive
+        run: |
+          APP_PATH="./DerivedData/Build/Products/Release/AppLock.app"
+          if [ ! -d "$APP_PATH" ]; then
+            APP_PATH="./DerivedData/Build/Products/Release/AppLock.app"
+          fi
+          echo "App path: $APP_PATH"
+          ls -la "./DerivedData/Build/Products/Release/"
+          ditto -c -k --keepParent "$APP_PATH" AppLock.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AppLock-macOS
+          path: AppLock.zip
+          retention-days: 7
