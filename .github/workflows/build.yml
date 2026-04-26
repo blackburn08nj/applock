@@ -41,13 +41,23 @@ jobs:
       
       - name: Create universal binary
         run: |
-          mkdir -p ./DerivedData/Build/Products/Release/AppLock.app/Contents/MacOS
+          # Copy arm64 app as base
+          cp -R ./DerivedData_arm64/Build/Products/Release/AppLock.app ./DerivedData/Build/Products/Release/AppLock.app
+    
+          # Replace executable with universal binary
           lipo -create \
             ./DerivedData_arm64/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock \
             ./DerivedData_x86_64/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock \
-            -output ./DerivedData/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock  
-      
-      
+            -output ./DerivedData/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock
+    
+          # Verify
+          file ./DerivedData/Build/Products/Release/AppLock.app/Contents/MacOS/AppLock      
+
+      - name: Create archive
+        run: |
+          ditto -c -k --keepParent ./DerivedData/Build/Products/Release/AppLock.app AppLock.zip
+          ls -la AppLock.zip
+          
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
