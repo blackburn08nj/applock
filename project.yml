@@ -24,4 +24,4 @@ targets:
         ENABLE_HARDENED_RUNTIME: YES
         CODE_SIGN_IDENTITY: "-"
         PRODUCT_NAME: AppLock
-        EXCLUDED_ARCHS: ""
+        ARCHS: "arm64 x86_64"
